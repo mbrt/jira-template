@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "project": {
+      "key": "CM"
+    },
+    "customfield_10006": "$epic_link",
+    "customfield_10204": {
+      "id": "$discovered_by"
+    },
+    "summary": "$summary",
+    "description": "$description",
+    "customfield_10005": "$sprint_id",
+    "customfield_10301": "$account_id",
+    "issuetype": {
+      "name": "$issue_type"
+    },
+    "labels": "$labels",
+    "assignee": {
+      "name": "$assignee"
+    },
+    "versions": "$versions",
+    "components": "$components",
+    "fixVersions": "$fix_versions"
+  }
+}

@@ -1,0 +1,24 @@
+address: https://jira.mycompany.com:8443
+username: REPLACEME
+password: REPLACEME-BASE64
+templates:
+  me: &ME REPLACEME
+  dk-account: &KUBE-ACCOUNT 16
+  internal: &DISCOVER-INTERN "10201"
+  customer: &DISCOVER-CUSTOMER "10202"
+  version-80: &VER-80 "11314"
+  kube: &KUBE-ISSUE
+    account_id: *KUBE-ACCOUNT
+    labels:
+      - kubernetes
+    assignee: *ME
+    discovered_by: *DISCOVER-INTERN
+sections:
+  - <<: *KUBE-ISSUE
+    id: kube-bug-80
+    issue_type: Bug
+    versions:
+      - id: *VER-80
+  - <<: *KUBE-ISSUE
+    id: kube-story
+    issue_type: Story

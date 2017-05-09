@@ -1,0 +1,5 @@
+[flake8]
+max-line-length = 100
+
+# ignored unless flake8-quotes pip package is installed
+inline-quotes  = "
