@@ -3,7 +3,7 @@ Command line tool for jira, templatizable.
 
 This utility has been tested with Python 3.6, but it's very possible that
 it's compatible with previous Python versions as well. The supported Jira
-versions are ones providing the `/rest/api/2` endpoint.
+versions are the ones providing the `/rest/api/2` endpoint.
 
 ## Install
 Clone this repository and install its dependencies:
@@ -31,8 +31,8 @@ The idea is pretty simple. After you configure two files: `template.json` and
 `conf.yaml`, the utility can be used to create and get tickets from Jira.
 
 Whenever you create a ticket, you have to specify the summary in the command
-line. You can edit the ticket description via the editor that is fired up with
-the command.
+line. You can edit the ticket description via the editor that is fired up
+afterwards.
 
 ## Configuration
 Start from the example in `examples/conf.yaml`:
@@ -46,7 +46,7 @@ Edit it and provide the following informations:
 
 * the server address
 * the username
-* the password encoded in base64 (you can do it by using `echo MYPWD | base64 -`)
+* the password encoded in base64 (you can encode it by using `echo MYPWD | base64 -`)
 
 You can leave the rest as is for the moment.
 
@@ -87,7 +87,7 @@ sections:
 ```
 
 You can add as many sections as you want. These will be selected by the create
-command by using the `-s <section-name>` flag.
+command with the `-s <section-name>` flag.
 
 For example:
 
@@ -101,7 +101,7 @@ will use the section with id `kube-bug-80` to replace the variables in the
 the ticket.
 
 Since the configuration file is a yaml, you can leverage its pretty cool
-standard reference mechanism to avoid repeting yourself. For example, with this
+reference mechanism to avoid repeting yourself. For example, with this
 reference:
 
 ```
@@ -110,7 +110,7 @@ templates:
 ```
 
 you can avoid repeting your username over and over in all the sections, and
-start using the reference just created:
+start using the `&ME` reference instead:
 
 ```
 sections:
