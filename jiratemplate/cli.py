@@ -162,6 +162,7 @@ def create(summary, conf_file, template_file, section_name=None, dry_run=False):
         print(json.dumps(res["request"], indent=2))
     else:
         print(json.dumps(res, indent=2))
+        print("Browse to: {}/browse/{}".format(conf["address"], res["key"]))
 
 
 def get(ticket_id, conf_file, dry_run=False):
