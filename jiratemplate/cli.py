@@ -1,8 +1,9 @@
 """Jira Template
 
 Usage:
-  jiratemplate [options] create [-t <file>] [-s <section>] <summary>
-  jiratemplate [options] get <id>
+  jiratemplate create [options] [-o <opt>]... <summary>
+  jiratemplate get [options] <id>
+  jiratemplate list (vars | sections) [options]
   jiratemplate (-h | --help)
   jiratemplate --version
 
@@ -17,15 +18,15 @@ Options:
                                 [default: ~/.jira-template/conf.yaml].
   -t <file>, --template=<file>  Specify the template file
                                 [default: ~/.jira-template/template.json].
-  -s <section>, --section=<section>
-                                Specify the config file section to be used for
+  -s <sec>, --section=<sec>     Specify the config file section to be used for
                                 the variables.
-
+  -o <opt>, --option=<opt>      Override a value in the template.
 """
 import base64
 import json
 import logging
 import os
+import re
 import sys
 
 from docopt import docopt
@@ -139,7 +140,7 @@ def jira_rest(conf, dry_run):
                     dry_run)
 
 
-def create(summary, conf_file, template_file, section_name=None, dry_run=False):
+def create(summary, conf_file, template_file, section_name=None, options={}, dry_run=False):
     conf = parse_yaml(conf_file)
     template = parse_json(template_file)
     log.debug("conf file: {}".format(conf))
@@ -149,6 +150,8 @@ def create(summary, conf_file, template_file, section_name=None, dry_run=False):
         "summary": summary,
         "description": bytes.decode(descr),
     }
+    opts.update(options)
+    log.debug("options: {}".format(opts))
     issueconf = IssueConf(conf, template, opts, section_name)
     rconf = issueconf.get_final_conf()
     log.debug("resulting config: {}".format(rconf))
@@ -163,6 +166,31 @@ def create(summary, conf_file, template_file, section_name=None, dry_run=False):
     else:
         print(json.dumps(res, indent=2))
         print("Browse to: {}/browse/{}".format(conf["address"], res["key"]))
+
+
+def get_vars_in_template(template, varlist):
+    for e in template.items():
+        (key, val) = e
+        if isinstance(val, str) and val.startswith("$"):
+            varlist.append(val[1:])
+        elif isinstance(val, dict):
+            get_vars_in_template(val, varlist)
+
+
+def list_vars(template_file):
+    template = parse_json(template_file)
+    log.debug("template file: {}".format(template))
+    varlist = []
+    get_vars_in_template(template, varlist)
+    for v in varlist:
+        print(v)
+
+
+def list_sections(conf_file):
+    conf = parse_yaml(conf_file)
+    log.debug("conf file: {}".format(conf))
+    for s in conf["sections"]:
+        print(s["id"])
 
 
 def get(ticket_id, conf_file, dry_run=False):
@@ -187,6 +215,18 @@ def replace_home(val):
     return val
 
 
+def parse_custom_opts(args):
+    opts = {}
+    for opt in args:
+        m = re.match("^([^=]+)=(.*)$", opt)
+        if m:
+            opts[m.group(1)] = m.group(2)
+        else:
+            log.debug("invalid custom option: {}".format(opt))
+    log.debug("custom options: {}".format(opts))
+    return opts
+
+
 def main():
     args = docopt(__doc__, version="Jira Template 0.1")
     init_logger(args["--verbose"])
@@ -199,9 +239,14 @@ def main():
                    replace_home(args["--config"]),
                    replace_home(args["--template"]),
                    args["--section"],
+                   parse_custom_opts(args["--option"]),
                    args["--dry-run"])
         elif args["get"]:
             get(args["<id>"], replace_home(args["--config"]), args["--dry-run"])
+        elif args["list"] and args["vars"]:
+            list_vars(replace_home(args["--template"]))
+        elif args["list"] and args["sections"]:
+            list_sections(replace_home(args["--config"]))
         else:
             die("command not found??")
     except Exception as e:
