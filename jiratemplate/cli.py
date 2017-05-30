@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Jira Template
 
 Usage:

@@ -17,14 +17,14 @@ pip install -r requirements.txt
 I recommend creating an alias for the command, something like:
 
 ```
-alias jtmp='python ~/jira-template/jiratemplate/cli.py'
+alias jtmp='~/jira-template/jiratemplate/cli.py'
 ```
 
 ## Usage
 The command line is available with:
 
 ```
-python jira-template/jiratemplate/cli.py
+jira-template/jiratemplate/cli.py
 ```
 
 The idea is pretty simple. After you configure two files: `template.json` and
